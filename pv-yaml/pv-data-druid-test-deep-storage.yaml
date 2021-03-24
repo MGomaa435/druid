@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: vol-druid-deep-storage
+spec:
+  accessModes:
+  - ReadWriteMany
+  capacity:
+    storage: 8Gi
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: deep-storage-claim
+    namespace: default
+  hostPath:
+    path: /data1/pv/vol-druid-deep-storage
+    type: ""
+  persistentVolumeReclaimPolicy: Recycle
+  volumeMode: Filesystem
+status:
+  phase: Bound
+
