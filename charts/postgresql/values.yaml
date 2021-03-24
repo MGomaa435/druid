@@ -304,10 +304,10 @@ persistence:
   ##
   subPath: ""
 
-  #storageClass: "-"
+  storageClass: "rook-no-replica"
   accessModes:
     - ReadWriteOnce
-  size: 8Gi
+  size: 50Gi
   annotations: {}
 
 ## updateStrategy for PostgreSQL StatefulSet and its slaves StatefulSets
