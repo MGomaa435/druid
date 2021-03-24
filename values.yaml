@@ -210,8 +210,8 @@ historical:
   persistence:
     enabled: true
     accessMode: ReadWriteOnce
-    size: "4Gi"
-    storageClass: "rook-cephfs"
+    size: "100Gi"
+    storageClass: "rook-no-replica"
 
   antiAffinity: "soft"
 
@@ -292,8 +292,8 @@ middleManager:
   persistence:
     enabled: true
     accessMode: ReadWriteOnce
-    size: "4Gi"
-    storageClass: "rook-cephfs"
+    size: "100Gi"
+    storageClass: "rook-no-replica"
 
   antiAffinity: "soft"
 
