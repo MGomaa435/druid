@@ -19,7 +19,21 @@ configVars:
   DRUID_USE_CONTAINER_IP: "true"
 
   ## Druid Common Configurations. ref: https://druid.apache.org/docs/latest/configuration/index.html#common-configurations
-  druid_extensions_loadList: '["druid-histogram", "druid-datasketches", "druid-lookups-cached-global", "postgresql-metadata-storage", "druid-kafka-indexing-service"]'
+  druid_extensions_loadList: '["druid-histogram", "druid-datasketches", "druid-lookups-cached-global", "postgresql-metadata-storage", "druid-kafka-indexing-service","druid-basic-security"]'
+  druid_auth_authenticatorChain: '["MyBasicMetadataAuthenticator"]'
+  #druid_auth_authenticator_allowall_type: "allowAll"
+  druid_escalator_type: "basic"
+  druid_escalator_internalClientUsername: "admin"
+  druid_escalator_internalClientPassword: "CEM435@#qeema"
+  #druid_auth_authorizers: '["MyBasicMetadataAuthorizer"]'
+  #druid_escalator_authorizerName: "MyBasicMetadataAuthorizer"
+  druid_auth_authorizer_MyBasicMetadataAuthorizer_type: "basic"
+  druid_auth_authenticator_MyBasicMetadataAuthenticator_type: "basic"
+  druid_auth_authenticator_MyBasicMetadataAuthenticator_initialAdminPassword: "CEM435@#qeema"
+  druid_auth_authenticator_MyBasicMetadataAuthenticator_initialInternalClientPassword: "CEM435@#qeema"
+  druid_auth_authenticator_MyBasicMetadataAuthenticator_credentialsValidator_type: "metadata"
+  druid_auth_authenticator_MyBasicMetadataAuthenticator_skipOnFailure: "false"
+  #druid_auth_authenticator_MyBasicMetadataAuthenticator_authorizerName: "MyBasicMetadataAuthorize"
   druid_metadata_storage_type: postgresql
   druid_metadata_storage_connector_connectURI: jdbc:postgresql://postgres:5432/druid
   druid_metadata_storage_connector_user: "druid"
@@ -42,7 +56,7 @@ broker:
   ##
   enabled: true
   name: broker
-  replicaCount: 2
+  replicaCount: 1
   port: 8082
   serviceType: NodePort
 
@@ -59,7 +73,7 @@ broker:
     enabled: false
     annotations: {}
       # kubernetes.io/ingress.class: nginx
-      # kubernetes.io/tls-acme: "true"
+    # kubernetes.io/tls-acme: "true"
     path: /
     hosts:
       - cluster.local
@@ -74,7 +88,7 @@ broker:
     #   memory: 1Gi
     # requests:
     #   cpu: 250m
-    #   memory: 512Mi
+  #   memory: 512Mi
 
   nodeSelector: {}
 
@@ -102,10 +116,10 @@ coordinator:
     enabled: false
     annotations: {}
       # kubernetes.io/ingress.class: nginx
-      # kubernetes.io/tls-acme: "true"
+    # kubernetes.io/tls-acme: "true"
     path: /
     hosts:
-      - cluster.local
+      - qeema.stc.local
     tls: []
     #  - secretName: chart-example-tls
     #    hosts:
@@ -117,7 +131,7 @@ coordinator:
     #   memory: 1Gi
     # requests:
     #   cpu: 250m
-    #   memory: 512Mi
+  #   memory: 512Mi
 
   nodeSelector: {}
 
@@ -142,7 +156,7 @@ overlord:
     enabled: false
     annotations: {}
       # kubernetes.io/ingress.class: nginx
-      # kubernetes.io/tls-acme: "true"
+    # kubernetes.io/tls-acme: "true"
     path: /
     hosts:
       - cluster.local
@@ -166,9 +180,9 @@ historical:
   ##
   enabled: true
   name: historical
-  replicaCount: 3
+  replicaCount: 1
   port: 8083
-  serviceType: NodePort
+  serviceType: ClusterIP
 
   config:
     DRUID_XMX: 512m
@@ -184,7 +198,7 @@ historical:
     enabled: false
     annotations: {}
       # kubernetes.io/ingress.class: nginx
-      # kubernetes.io/tls-acme: "true"
+    # kubernetes.io/tls-acme: "true"
     path: /
     hosts:
       - cluster.local
@@ -216,7 +230,7 @@ historical:
     #   memory: 2Gi
     # requests:
     #   cpu: 500m
-    #   memory: 512Mi
+  #   memory: 512Mi
 
   ## (dict) If specified, apply these annotations to each master Pod
   podAnnotations: {}
@@ -234,7 +248,7 @@ middleManager:
   ##
   enabled: true
   name: middle-manager
-  replicaCount: 2
+  replicaCount: 1
   port: 8091
   serviceType: ClusterIP
 
@@ -249,24 +263,24 @@ middleManager:
     minReplicas: 2
     maxReplicas: 5
     metrics:
-    - type: Resource
-      resource:
-        name: cpu
-        target:
-          type: Utilization
-          averageUtilization: 60
-    - type: Resource
-      resource:
-        name: memory
-        target:
-          type: Utilization
-          averageUtilization: 60
+      - type: Resource
+        resource:
+          name: cpu
+          target:
+            type: Utilization
+            averageUtilization: 60
+      - type: Resource
+        resource:
+          name: memory
+          target:
+            type: Utilization
+            averageUtilization: 60
 
   ingress:
     enabled: false
     annotations: {}
       # kubernetes.io/ingress.class: nginx
-      # kubernetes.io/tls-acme: "true"
+    # kubernetes.io/tls-acme: "true"
     path: /
     hosts:
       - cluster.local
@@ -298,7 +312,7 @@ middleManager:
     #   memory: 1Gi
     # requests:
     #   cpu: 250m
-    #   memory: 256Mi
+  #   memory: 256Mi
 
   ## (dict) If specified, apply these annotations to each master Pod
   podAnnotations: {}
@@ -316,7 +330,7 @@ router:
   ##
   enabled: true
   name: router
-  replicaCount: 4
+  replicaCount: 1
   port: 8888
   serviceType: NodePort
 
@@ -329,7 +343,7 @@ router:
     enabled: false
     annotations: {}
       # kubernetes.io/ingress.class: nginx
-      # kubernetes.io/tls-acme: "true"
+    # kubernetes.io/tls-acme: "true"
     path: /
     hosts:
       - cluster.local
@@ -344,7 +358,7 @@ router:
     #   memory: 256Mi
     # requests:
     #   cpu: 100m
-    #   memory: 128Mi
+  #   memory: 128Mi
 
   nodeSelector: {}
 
